@@ -1,0 +1,6 @@
+[submodule "encoder"]
+	path = encoder
+	url = https://github.com/jamon/pi-pico-pio-quadrature-encoder.git
+[submodule "pico-sdk"]
+	path = pico-sdk
+	url = https://github.com/raspberrypi/pico-sdk.git

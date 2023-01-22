@@ -1,0 +1,12 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+		  "label": "Build arcade_ctrl",
+		  "type": "shell",
+		  "command": "cd ../builds/arcade_ctrls && make -j",
+		  "group": "build",
+		  "problemMatcher": ["$gcc"]
+		}
+	  ]
+}
