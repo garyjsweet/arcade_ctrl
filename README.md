@@ -10,14 +10,24 @@ The quadrature encoder is implemented using Jamon's code [here](https://github.c
 
 To build:
 
-1) `git clone https://github.com/garyjsweet/arcade_ctrl.git --recurse-submodules`
+1) Clone the repo and update certain submodules
+   Note: if you use `--recurse-submodules` here it will take a long time
+```
+git clone https://github.com/garyjsweet/arcade_ctrl.git
+cd arcade_ctrl
+git submodule init
+git submodule update
+cd pico-sdk/
+git submodule init
+git submodule update
+```
 
 2) Make an out-of-tree build folder and configure cmake
-   Use `<PATH_TO_THIS_REPO>/pico-sdk/cmake/preload/toolchains/pico_arm_gcc.cmake` as the toolchain file.
+   Use `<PATH_TO_THIS_REPO>/pico-sdk/cmake/preload/toolchains/pico_arm_gcc.cmake` as the toolchain file. If you have an existing build, be sure to `make clean` and `make rebuild_cache`
 
 3) Ensure you have an appropriate `arm-none-eabi-gcc` compiler toolchain installed for the pico.
 
-4) `make`
+4) `cd` into your build folder and `make` or `make -j`
 
 5) Connect the pico board to your PC whilst holding down the `bootsel` button on the pico board.
 
