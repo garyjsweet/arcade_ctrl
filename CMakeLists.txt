@@ -20,6 +20,7 @@ target_sources(${PROJECT_NAME} PUBLIC
         ArcadeCtrl.cpp
         USB.cpp
         BlinkLED.cpp
+        Encoder.pio
         )
 
 # Make sure TinyUSB can find tusb_config.h
@@ -28,6 +29,15 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 
 target_include_directories(${PROJECT_NAME} PRIVATE
         encoder/src)
+
+add_custom_target(EncoderPioHeader
+                  ${CMAKE_CURRENT_BINARY_DIR}/pioasm/pioasm
+                  ${CMAKE_CURRENT_LIST_DIR}/Encoder.pio
+                  ${CMAKE_CURRENT_LIST_DIR}/EncoderPio.h)
+
+add_dependencies(EncoderPioHeader PioasmBuild)
+
+add_dependencies(${PROJECT_NAME} EncoderPioHeader)
 
 # In addition to pico_stdlib required for common PicoSDK functionality, add dependency on tinyusb_device
 # for TinyUSB device support and tinyusb_board for the additional board support library used by the example

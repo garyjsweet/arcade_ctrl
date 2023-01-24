@@ -6,7 +6,6 @@ It's based around the Raspberry Pi Pico board which provides all of the GPIO and
 
 [TinyUSB](https://github.com/hathach/tinyusb) is used from the [pico SDK](https://github.com/raspberrypi/pico-sdk) to handle the USB communication.
 
-The quadrature encoder is implemented using Jamon's code [here](https://github.com/jamon/pi-pico-pio-quadrature-encoder)
 
 To build:
 

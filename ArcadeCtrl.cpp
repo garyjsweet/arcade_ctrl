@@ -152,7 +152,7 @@ void ArcadeCtrl::ReadInputs(InputData *inputs, const InputData &lastSent)
    }
 
    // HACKs to debug values via online gamepad tool
-   // inputs->buttons = inputs->angle[1];
+   inputs->buttons = inputs->angle[0];
    // inputs->buttons = inputs->adc[0];
 }
 

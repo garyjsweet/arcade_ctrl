@@ -25,7 +25,7 @@
 
 #include "Encoder.h"
 
-#include "quadrature.pio.h"
+#include "EncoderPio.h"
 
 #include <cstdint>
 
@@ -37,9 +37,9 @@ Encoder::Encoder(uint32_t pioIndex, uint32_t pinA, uint32_t pinB, uint32_t ppr) 
     m_pio = pioIndex == 0 ? pio0 : pio1;
 
     // Claim state machine
-    uint32_t offset = pio_add_program(m_pio, &quadrature_program);
+    uint32_t offset = pio_add_program(m_pio, &QuadEncoder_program);
     m_stateMachine = pio_claim_unused_sm(m_pio, true);
-    quadrature_program_init(m_pio, m_stateMachine, offset, pinA, pinB);
+    EncoderProgramInit(m_pio, m_stateMachine, offset, pinA, pinB);
 
     Zero();
 }
