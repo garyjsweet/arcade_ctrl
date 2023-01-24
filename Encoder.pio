@@ -42,13 +42,13 @@ wait_b_low:
     jmp main
 
 % c-sdk {
-static inline void EncoderProgramInit(PIO pio, uint sm, uint offset, uint a_pin, uint b_pin)
+static inline void EncoderProgramInit(PIO pio, uint sm, uint offset, uint pinA, uint pinB)
 {
     pio_sm_config cfg = QuadEncoder_program_get_default_config(offset);
 
-    sm_config_set_in_pins(&cfg, b_pin);
-    sm_config_set_jmp_pin(&cfg, a_pin);
-    sm_config_set_in_shift(&cfg, false, true, 32);
+    sm_config_set_jmp_pin(&cfg, pinA);
+    sm_config_set_in_pins(&cfg, pinB);
+    sm_config_set_in_shift(&cfg, /*shift_right=*/false, /*autopush=*/true, 32);
     pio_sm_init(pio, sm, offset, &cfg);
     pio_sm_set_enabled(pio, sm, true);
 }
