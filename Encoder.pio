@@ -24,19 +24,21 @@
 
 .program QuadEncoder
 main:
-    wait 0 pin 0
+    wait 1 pin 0 ; Wait B high
     jmp pin, increment
 decrement:
     jmp x--, next ; Note: jump is conditional on x!=0 so always jump to next instr
 next:
-    jmp wait_b_high
+    jmp wait_b_low
 increment:
     mov x, ~x
     jmp x--, negate
 negate:
     mov x, ~x
-wait_b_high:
-    wait 1 pin 0
+wait_b_low:
+    mov y, x     ; Latch x into y (we only read y from outside)
+                 ; This should guarantee that we never see partial calculations
+    wait 0 pin 0 ; Wait b low
     jmp main
 
 % c-sdk {

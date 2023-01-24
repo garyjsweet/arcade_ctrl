@@ -13,26 +13,27 @@
 // ----------- //
 
 #define QuadEncoder_wrap_target 0
-#define QuadEncoder_wrap 8
+#define QuadEncoder_wrap 9
 
 static const uint16_t QuadEncoder_program_instructions[] = {
             //     .wrap_target
-    0x2020, //  0: wait   0 pin, 0                   
+    0x20a0, //  0: wait   1 pin, 0                   
     0x00c4, //  1: jmp    pin, 4                     
     0x0043, //  2: jmp    x--, 3                     
     0x0007, //  3: jmp    7                          
     0xa029, //  4: mov    x, !x                      
     0x0046, //  5: jmp    x--, 6                     
     0xa029, //  6: mov    x, !x                      
-    0x20a0, //  7: wait   1 pin, 0                   
-    0x0000, //  8: jmp    0                          
+    0xa041, //  7: mov    y, x                       
+    0x2020, //  8: wait   0 pin, 0                   
+    0x0000, //  9: jmp    0                          
             //     .wrap
 };
 
 #if !PICO_NO_HARDWARE
 static const struct pio_program QuadEncoder_program = {
     .instructions = QuadEncoder_program_instructions,
-    .length = 9,
+    .length = 10,
     .origin = -1,
 };
 

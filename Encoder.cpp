@@ -47,17 +47,13 @@ Encoder::Encoder(uint32_t pioIndex, uint32_t pinA, uint32_t pinB, uint32_t ppr) 
 void Encoder::Zero()
 {
     pio_sm_exec(m_pio, m_stateMachine, pio_encode_set(pio_x, 0));
+    pio_sm_exec(m_pio, m_stateMachine, pio_encode_set(pio_y, 0));
 }
 
-int32_t Encoder::ReadRaw() const
+int32_t Encoder::Read() const
 {
-   pio_sm_exec_wait_blocking(m_pio, m_stateMachine, pio_encode_in(pio_x, 32));
+   pio_sm_exec_wait_blocking(m_pio, m_stateMachine, pio_encode_in(pio_y, 32));
    int32_t x = pio_sm_get_blocking(m_pio, m_stateMachine);
    return x;
 }
 
-int32_t Encoder::ReadAngle() const
-{
-   int32_t angle = ReadRaw() * 360 / m_ppr;
-   return angle;
-}

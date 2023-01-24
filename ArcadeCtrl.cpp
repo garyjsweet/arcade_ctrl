@@ -146,13 +146,13 @@ void ArcadeCtrl::ReadInputs(InputData *inputs, const InputData &lastSent)
 
    for (uint32_t i = 0; i < NUM_ENCODER_INPUTS; i++)
    {
-      inputs->angle[i] = m_encoders[i].ReadAngle();
+      inputs->angle[i] = m_encoders[i].Read();
       // Update the delta angle
       inputs->angleDelta[i] = inputs->angle[i] - lastSent.angle[i];
    }
 
    // HACKs to debug values via online gamepad tool
-   inputs->buttons = inputs->angle[0];
+   //inputs->buttons = inputs->angle[0];
    // inputs->buttons = inputs->adc[0];
 }
 

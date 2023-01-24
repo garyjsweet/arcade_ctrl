@@ -35,8 +35,7 @@ public:
 
    bool    IsValid() const { return m_ppr > 0; }
    void    Zero();
-   int32_t ReadRaw() const;
-   int32_t ReadAngle() const;
+   int32_t Read() const;
 
 private:
    PIO      m_pio;
