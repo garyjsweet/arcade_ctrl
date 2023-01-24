@@ -28,6 +28,9 @@
 
 #include <cstdint>
 
+constexpr uint32_t LED_PIN  = 25;
+constexpr uint32_t LED_MASK = (1 << LED_PIN);
+
 class BlinkLED
 {
 public:

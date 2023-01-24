@@ -25,7 +25,8 @@
  */
 #include "BlinkLED.h"
 
-#include "bsp/board.h"
+#include "hardware/gpio.h"
+#include "pico/stdlib.h"
 
 //--------------------------------------------------------------------+
 // BLINKING TASK
@@ -38,17 +39,22 @@ void BlinkLED::Process()
       if (m_ledState)
       {
          m_ledState = false;
-         board_led_write(m_ledState);
+         gpio_clr_mask(LED_MASK);
       }
       return;
    }
 
    // Blink every interval ms
-   if (board_millis() - m_lastMS < m_intervalMS)
+   uint32_t now = to_ms_since_boot(get_absolute_time());
+   if (now - m_lastMS < m_intervalMS)
       return;
 
-   m_lastMS += m_intervalMS;
+   m_lastMS = now;
 
-   board_led_write(m_ledState);
+   if (m_ledState)
+      gpio_set_mask(LED_MASK);
+   else
+      gpio_clr_mask(LED_MASK);
+
    m_ledState = !m_ledState;
 }

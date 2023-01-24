@@ -113,10 +113,10 @@ int ArcadeCtrl::Run()
       m_usb.Process();
       UpdateBlinker();
 
-      uint32_t now = board_millis();
+      uint32_t now = to_ms_since_boot(get_absolute_time());
 
       // Poll inputs at defined interval
-      if (board_millis() - startMS < POLL_INTERVAL_MS)
+      if (now - startMS < POLL_INTERVAL_MS)
          continue;
 
       startMS = now;
@@ -147,13 +147,10 @@ void ArcadeCtrl::ReadInputs(InputData *inputs, const InputData &lastSent)
    for (uint32_t i = 0; i < NUM_ENCODER_INPUTS; i++)
    {
       inputs->angle[i] = m_encoders[i].Read();
+
       // Update the delta angle
       inputs->angleDelta[i] = inputs->angle[i] - lastSent.angle[i];
    }
-
-   // HACKs to debug values via online gamepad tool
-   //inputs->buttons = inputs->angle[0];
-   // inputs->buttons = inputs->adc[0];
 }
 
 bool ArcadeCtrl::NeedsSending(const InputData &cur, const InputData &prev)
@@ -174,11 +171,13 @@ bool ArcadeCtrl::NeedsSending(const InputData &cur, const InputData &prev)
 
 void ArcadeCtrl::InitGPIO()
 {
-   // All pins (button, analog & encoder) must be internally pulled up, and marked as input
+   // All button, analog & encoder pins must be internally pulled up, and marked as input
    gpio_init_mask(GPIO_MASK);
    gpio_set_dir_in_masked(GPIO_MASK);
 
    for (uint8_t i = 0; i < 32; i++)
       if (GPIO_MASK & (1 << i))
          gpio_pull_up(i);
+
+    gpio_set_dir_out_masked(LED_MASK);
 }
