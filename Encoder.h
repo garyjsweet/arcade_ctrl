@@ -38,6 +38,12 @@ public:
    int32_t Read() const;
 
 private:
+   static void IRQHandler0();
+   static void IRQHandler1();
+
+   static int32_t m_rotation[2];
+
+   uint32_t m_pioIndex = 0;
    PIO      m_pio;
    uint32_t m_stateMachine = 0;
    uint32_t m_ppr = 0;

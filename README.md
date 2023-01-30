@@ -6,6 +6,7 @@ It's based around the Raspberry Pi Pico board which provides all of the GPIO and
 
 [TinyUSB](https://github.com/hathach/tinyusb) is used from the [pico SDK](https://github.com/raspberrypi/pico-sdk) to handle the USB communication.
 
+[Rotary Encoder PIO code](https://github.com/GitJer/Some_RPI-Pico_stuff/tree/main/Rotary_encoder) came via GitJer's excellent repo.
 
 To build:
 
