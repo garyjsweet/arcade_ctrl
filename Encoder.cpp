@@ -29,16 +29,17 @@
 
 #include <cstdint>
 
-int32_t Encoder::m_rotation[2];
+int32_t Encoder::s_rotation[2];
+int32_t Encoder::s_gain;
 
 void Encoder::IRQHandler0()
 {
     // test if irq 0 was raised
     if (pio0_hw->irq & 1)
-        m_rotation[0] += 1;
+        s_rotation[0] -= s_gain;
     // test if irq 1 was raised
     if (pio0_hw->irq & 2)
-        m_rotation[0] -= 1;
+        s_rotation[0] += s_gain;
     // clear both interrupts
     pio0_hw->irq = 3;
 }
@@ -47,19 +48,20 @@ void Encoder::IRQHandler1()
 {
     // test if irq 0 was raised
     if (pio1_hw->irq & 1)
-        m_rotation[1] += 1;
+        s_rotation[1] -= s_gain;
     // test if irq 1 was raised
     if (pio1_hw->irq & 2)
-        m_rotation[1] -= 1;
+        s_rotation[1] += s_gain;
     // clear both interrupts
     pio1_hw->irq = 3;
 }
 
-Encoder::Encoder(uint32_t pioIndex, uint32_t pinA, uint32_t pinB, uint32_t ppr) :
-    m_pioIndex(pioIndex),
-    m_ppr(ppr)
+Encoder::Encoder(uint32_t pioIndex, uint32_t pinA, uint32_t pinB, int32_t gain) :
+    m_pioIndex(pioIndex)
 {
     assert(pioIndex < 2);
+
+    s_gain = gain;
 
     m_pio = pioIndex == 0 ? pio0 : pio1;
 
@@ -92,11 +94,11 @@ Encoder::Encoder(uint32_t pioIndex, uint32_t pinA, uint32_t pinB, uint32_t ppr) 
 
 void Encoder::Zero()
 {
-    m_rotation[m_pioIndex] = 0;
+    s_rotation[m_pioIndex] = 0;
 }
 
 int32_t Encoder::Read() const
 {
-   return m_rotation[m_pioIndex];
+   return s_rotation[m_pioIndex];
 }
 

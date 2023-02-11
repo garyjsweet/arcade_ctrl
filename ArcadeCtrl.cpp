@@ -26,10 +26,16 @@
 
 #include "bsp/board.h"
 
-
-// CONTROLLER CONFIG (change these based on what you attach)
-constexpr uint32_t NUM_ANALOG_INPUTS  = 0; // Max 3
-constexpr uint32_t NUM_ENCODER_INPUTS = 2; // Max 2
+// BOARD CONFIG - chosen based on the DIP of the connected board
+// One config per dip option (00, 01, 10, 11)
+ArcadeCtrl::BoardConfig ArcadeCtrl::s_boardConfigs[4] =
+{
+   // Analogs  Encoders  Gain
+   0,          2,        8,      // Player 1 with low PPR trackball
+   0,          1,       -2,      // Player 2 with high PPR spinner (reversed)
+   0,          0,        1,
+   0,          0,        1
+};
 
 // PIN CONFIG
 
@@ -45,11 +51,11 @@ constexpr uint32_t DIP_SHIFT  = 21;
 
 constexpr uint32_t ENCODER0_A_PIN = 16;
 constexpr uint32_t ENCODER0_B_PIN = 17;
-constexpr uint32_t ENCODER0_PPR   = 400; // Pulses per revolution
+constexpr uint32_t ENCODER0_MUL   = 8;
 
 constexpr uint32_t ENCODER1_A_PIN = 18;
 constexpr uint32_t ENCODER1_B_PIN = 19;
-constexpr uint32_t ENCODER1_PPR   = 400; // Pulses per revolution
+constexpr uint32_t ENCODER1_MUL   = 8;
 
 constexpr uint32_t PIO_MASK = (1 << ENCODER0_A_PIN) | (1 << ENCODER0_B_PIN) |
                               (1 << ENCODER1_A_PIN) | (1 << ENCODER1_B_PIN);
@@ -70,18 +76,23 @@ ArcadeCtrl::ArcadeCtrl()
    board_init();
    InitGPIO();
 
+   // Read the PID - this will also control the spinner/trackball gain
+   // since we know which device is connected to which board.
+   uint32_t pidDip = ((~gpio_get_all()) & DIP_MASK) >> DIP_SHIFT;
+
+   m_boardCfg = s_boardConfigs[pidDip];
+
+   m_usb = USB(pidDip, m_boardCfg.numAnalogs, m_boardCfg.numEncoders);
+
    // Create our encoder inputs
-   if (NUM_ENCODER_INPUTS > 0)
-      m_encoders[0] = Encoder(0, ENCODER0_A_PIN, ENCODER0_B_PIN, ENCODER0_PPR);
-   if (NUM_ENCODER_INPUTS > 1)
-      m_encoders[1] = Encoder(1, ENCODER1_A_PIN, ENCODER1_B_PIN, ENCODER1_PPR);
+   if (m_boardCfg.numEncoders > 0)
+      m_encoders[0] = Encoder(0, ENCODER0_A_PIN, ENCODER0_B_PIN, m_boardCfg.encoderGain);
+   if (m_boardCfg.numEncoders > 1)
+      m_encoders[1] = Encoder(1, ENCODER1_A_PIN, ENCODER1_B_PIN, m_boardCfg.encoderGain);
 
    // Create our analog inputs
-   for (uint32_t i = 0; i < NUM_ANALOG_INPUTS; i++)
+   for (uint32_t i = 0; i < m_boardCfg.numAnalogs; i++)
       m_analogs[i] = Analog(i);
-
-   uint32_t pidDip = ((~gpio_get_all()) & DIP_MASK) >> DIP_SHIFT;
-   m_usb = USB(pidDip, NUM_ANALOG_INPUTS, NUM_ENCODER_INPUTS);
 
    // The tiny-usb code is essentially a singleton, so register our
    // class to interact with it
@@ -141,10 +152,10 @@ void ArcadeCtrl::ReadInputs(InputData *inputs, const InputData &lastSent)
    // Our input pins are pulled-up, so we need to invert to get the up/down state
    inputs->buttons = (~gpio_get_all()) & INPUT_MASK;
 
-   for (uint32_t i = 0; i < NUM_ANALOG_INPUTS; i++)
+   for (uint32_t i = 0; i < m_boardCfg.numAnalogs; i++)
       inputs->analog[i] = m_analogs[i].Read();
 
-   for (uint32_t i = 0; i < NUM_ENCODER_INPUTS; i++)
+   for (uint32_t i = 0; i < m_boardCfg.numEncoders; i++)
    {
       inputs->angle[i] = m_encoders[i].Read();
 
@@ -158,11 +169,11 @@ bool ArcadeCtrl::NeedsSending(const InputData &cur, const InputData &prev)
    if (cur.buttons != prev.buttons)
       return true;
 
-   for (uint32_t i = 0; i < NUM_ANALOG_INPUTS; i++)
+   for (uint32_t i = 0; i < m_boardCfg.numAnalogs; i++)
       if (cur.analog[i] != prev.analog[i])
          return true;
 
-   for (uint32_t i = 0; i < NUM_ENCODER_INPUTS; i++)
+   for (uint32_t i = 0; i < m_boardCfg.numEncoders; i++)
       if (cur.angle[i] != prev.angle[i] || cur.angleDelta != 0)
          return true;
 

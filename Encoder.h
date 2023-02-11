@@ -31,9 +31,9 @@ class Encoder
 {
 public:
    Encoder() = default;
-   Encoder(uint32_t pioIndex, uint32_t pinA, uint32_t pinB, uint32_t ppr);
+   Encoder(uint32_t pioIndex, uint32_t pinA, uint32_t pinB, int32_t gain);
 
-   bool    IsValid() const { return m_ppr > 0; }
+   bool    IsValid() const { return s_gain != 0; }
    void    Zero();
    int32_t Read() const;
 
@@ -41,10 +41,10 @@ private:
    static void IRQHandler0();
    static void IRQHandler1();
 
-   static int32_t m_rotation[2];
+   static int32_t s_rotation[2];
+   static int32_t s_gain;
 
    uint32_t m_pioIndex = 0;
    PIO      m_pio;
    uint32_t m_stateMachine = 0;
-   uint32_t m_ppr = 0;
 };

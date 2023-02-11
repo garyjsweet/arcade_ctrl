@@ -45,11 +45,21 @@ private:
     void ReadInputs(InputData *inputs, const InputData &curInputs);
     void UpdateBlinker();
 
-    static bool NeedsSending(const InputData &data1, const InputData &data2);
+    bool NeedsSending(const InputData &data1, const InputData &data2);
 
 private:
-    Encoder  m_encoders[2];
-    Analog   m_analogs[3];
-    USB      m_usb;
-    BlinkLED m_blinker;
+    struct BoardConfig
+    {
+        uint32_t numAnalogs  = 0;
+        uint32_t numEncoders = 0;
+        int32_t  encoderGain = 1;
+    };
+
+    static BoardConfig s_boardConfigs[4];
+
+    BoardConfig m_boardCfg;
+    Encoder     m_encoders[2];
+    Analog      m_analogs[3];
+    USB         m_usb;
+    BlinkLED    m_blinker;
 };
