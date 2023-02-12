@@ -150,7 +150,16 @@ void ArcadeCtrl::ReadInputs(InputData *inputs, const InputData &lastSent)
    *inputs = {};
 
    // Our input pins are pulled-up, so we need to invert to get the up/down state
-   inputs->buttons = (~gpio_get_all()) & INPUT_MASK;
+   uint32_t buttons = (~gpio_get_all()) & INPUT_MASK;
+
+   // We also want to debounce the button-ups. We'll pass the press immediately,
+   // but wait for 5ms for bouncing on release.
+   m_buttonDebounceArray[m_buttonDebouncePos++] = buttons;
+   if (m_buttonDebouncePos >= m_buttonDebounceArray.size())
+      m_buttonDebouncePos = 0;
+
+   for (uint32_t i = 0; i < m_buttonDebounceArray.size(); i++)
+      inputs->buttons |= m_buttonDebounceArray[i];
 
    for (uint32_t i = 0; i < m_boardCfg.numAnalogs; i++)
       inputs->analog[i] = m_analogs[i].Read();

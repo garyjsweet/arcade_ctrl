@@ -32,6 +32,7 @@
 #include "BlinkLED.h"
 
 #include <cstdint>
+#include <array>
 
 class ArcadeCtrl
 {
@@ -62,4 +63,7 @@ private:
     Analog      m_analogs[3];
     USB         m_usb;
     BlinkLED    m_blinker;
+
+    std::array<uint32_t, 5> m_buttonDebounceArray {};
+    uint32_t                m_buttonDebouncePos = 0;
 };
