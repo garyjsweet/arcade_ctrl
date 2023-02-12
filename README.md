@@ -1,4 +1,4 @@
-![Screenshot](docs/images/board_preview.png)
+![Screenshot](docs/images/board_preview.jpg)
 
 This is the firmware and PCB design for a low-latency USB controller for arcade controls - buttons, joysticks (digital and analog), and mouse-like things (spinners & trackballs).
 
