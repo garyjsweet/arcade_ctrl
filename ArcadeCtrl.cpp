@@ -152,8 +152,15 @@ void ArcadeCtrl::ReadInputs(InputData *inputs, const InputData &lastSent)
    // Our input pins are pulled-up, so we need to invert to get the up/down state
    uint32_t buttons = (~gpio_get_all()) & INPUT_MASK;
 
-   // We also want to debounce the button-ups. We'll pass the press immediately,
-   // but wait for 5ms for bouncing on release.
+   // We also want to debounce the buttons. We'll pass the press immediately,
+   // but wait for 5ms for bouncing on release. This will debounce both the press
+   // and release, but won't affect the latency of the press reaching the device.
+   // Essentially, every sampling period we overwrite the oldest entry in a circular
+   // buffer with the current state of the buttons, one bit per button (0=up, 1=down).
+   // We simply bitwise OR every entry in the buffer together to get the input to
+   // send to the device. So, any button registered as down will be seen as down
+   // immediately, but will take at least 5ms to clear the ring buffer and become
+   // UP again. Any bouncing in that 5ms period is then essentially ignored.
    m_buttonDebounceArray[m_buttonDebouncePos++] = buttons;
    if (m_buttonDebouncePos >= m_buttonDebounceArray.size())
       m_buttonDebouncePos = 0;
