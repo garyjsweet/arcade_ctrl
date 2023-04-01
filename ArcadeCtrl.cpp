@@ -31,10 +31,10 @@
 ArcadeCtrl::BoardConfig ArcadeCtrl::s_boardConfigs[4] =
 {
    // Analogs  Encoders  Gain
-   0,          2,        8,      // Player 1 with low PPR trackball
-   0,          1,       -2,      // Player 2 with high PPR spinner (reversed)
-   0,          0,        1,
-   0,          0,        1
+   0,          2,        10.0f,    // Player 1 with low PPR trackball
+   0,          1,       -1.0f,     // Player 2 with high PPR spinner (reversed)
+   0,          0,        1.0f,
+   0,          0,        1.0f
 };
 
 // PIN CONFIG
@@ -51,11 +51,9 @@ constexpr uint32_t DIP_SHIFT  = 21;
 
 constexpr uint32_t ENCODER0_A_PIN = 16;
 constexpr uint32_t ENCODER0_B_PIN = 17;
-constexpr uint32_t ENCODER0_MUL   = 8;
 
 constexpr uint32_t ENCODER1_A_PIN = 18;
 constexpr uint32_t ENCODER1_B_PIN = 19;
-constexpr uint32_t ENCODER1_MUL   = 8;
 
 constexpr uint32_t PIO_MASK = (1 << ENCODER0_A_PIN) | (1 << ENCODER0_B_PIN) |
                               (1 << ENCODER1_A_PIN) | (1 << ENCODER1_B_PIN);

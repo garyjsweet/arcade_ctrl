@@ -53,7 +53,7 @@ private:
     {
         uint32_t numAnalogs  = 0;
         uint32_t numEncoders = 0;
-        int32_t  encoderGain = 1;
+        float    encoderGain = 1.0f;
     };
 
     static BoardConfig s_boardConfigs[4];

@@ -13,6 +13,8 @@ pico_sdk_init()
 
 add_executable(${PROJECT_NAME})
 
+set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 17)
+
 target_sources(${PROJECT_NAME} PUBLIC
         main.cpp
         Encoder.cpp

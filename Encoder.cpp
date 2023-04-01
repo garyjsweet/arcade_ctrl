@@ -29,8 +29,8 @@
 
 #include <cstdint>
 
-int32_t Encoder::s_rotation[2];
-int32_t Encoder::s_gain;
+float Encoder::s_rotation[2];
+float Encoder::s_gain;
 
 void Encoder::IRQHandler0()
 {
@@ -56,7 +56,7 @@ void Encoder::IRQHandler1()
     pio1_hw->irq = 3;
 }
 
-Encoder::Encoder(uint32_t pioIndex, uint32_t pinA, uint32_t pinB, int32_t gain) :
+Encoder::Encoder(uint32_t pioIndex, uint32_t pinA, uint32_t pinB, float gain) :
     m_pioIndex(pioIndex)
 {
     assert(pioIndex < 2);
@@ -94,11 +94,10 @@ Encoder::Encoder(uint32_t pioIndex, uint32_t pinA, uint32_t pinB, int32_t gain) 
 
 void Encoder::Zero()
 {
-    s_rotation[m_pioIndex] = 0;
+    s_rotation[m_pioIndex] = 0.0f;
 }
 
 int32_t Encoder::Read() const
 {
-   return s_rotation[m_pioIndex];
+   return static_cast<int32_t>(s_rotation[m_pioIndex]);
 }
-

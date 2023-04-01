@@ -27,6 +27,8 @@
 #include "USB.h"
 #include "tusb.h"
 
+#include <algorithm>
+
 /* A combination of interfaces must have a unique product id, since PC will save device driver after the first plug.
  * Same VID/PID with different interface e.g MSC (first), then CDC (later) will possibly cause system error on PC.
  *
@@ -238,9 +240,9 @@ void USB::SendHIDReport(uint8_t reportID)
       hid_mouse_report_t report = {};
 
       if (m_numEncoders > 0)
-         report.x = m_inputData.angleDelta[0];
+         report.x = std::min(std::max(m_inputData.angleDelta[0], int32_t(-127)), int32_t(127));
       if (m_numEncoders > 1)
-         report.y = m_inputData.angleDelta[1];
+         report.y = std::min(std::max(m_inputData.angleDelta[1], int32_t(-127)), int32_t(127));
 
       if (report.x == 0 && report.y == 0)
          break; // Don't send if no deltas
